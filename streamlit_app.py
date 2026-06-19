@@ -402,6 +402,8 @@ Note: Failure to pay rent is grounds for eviction. Always pay promptly or commun
 # Initialize session state
 if "question_history" not in st.session_state:
     st.session_state.question_history = []
+if "current_question" not in st.session_state:
+    st.session_state.current_question = ""
 
 # Helper function to find answer
 def get_answer(question: str):
@@ -434,8 +436,10 @@ with col1:
 
     question = st.text_input(
         "What would you like to know about Portico policies?",
+        value=st.session_state.current_question,
         placeholder="e.g., What is the pet policy?",
-        key="question_input"
+        on_change=lambda: st.session_state.update({"current_question": st.session_state.temp_input}),
+        key="temp_input"
     )
 
     col_search1, col_search2 = st.columns([3, 1])
@@ -479,7 +483,8 @@ with col1:
         st.subheader("📋 Question History")
         for i, hist_question in enumerate(st.session_state.question_history, 1):
             if st.button(f"Q{i}: {hist_question}", key=f"history_{i}", use_container_width=True):
-                st.session_state.question_input = hist_question
+                st.session_state.current_question = hist_question
+                st.session_state.temp_input = hist_question
                 st.rerun()
 
 with col2:
@@ -493,7 +498,8 @@ with col2:
             key=f"example_{i}",
             use_container_width=True
         ):
-            st.session_state.question_input = example
+            st.session_state.current_question = example
+            st.session_state.temp_input = example
             st.rerun()
 
 # Footer
