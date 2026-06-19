@@ -434,14 +434,12 @@ col1, col2 = st.columns([2, 1])
 with col1:
     st.subheader("💬 Ask a Question")
 
+    # Display the question text input with session state value
     question = st.text_input(
         "What would you like to know about Portico policies?",
+        value=st.session_state.current_question,
         placeholder="e.g., What is the pet policy?"
     )
-
-    # Use session state question if no input
-    if st.session_state.current_question and not question:
-        question = st.session_state.current_question
 
     col_search1, col_search2 = st.columns([3, 1])
     with col_search1:
@@ -477,6 +475,9 @@ with col1:
                     st.session_state.question_history.pop()
         else:
             st.error(f"❌ Question not found. Try questions like 'What is the pet policy?' or 'How do I submit a maintenance request?'")
+
+        # Clear session state after processing
+        st.session_state.current_question = ""
 
     # Question History
     if st.session_state.question_history:
